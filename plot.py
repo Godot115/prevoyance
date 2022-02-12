@@ -2,7 +2,7 @@
 # @Time    : 2/3/22 20:32
 # @Author  : godot
 # @FileName: plot.py
-# @Project : prevoyance_dash
+# @Project : prevoyance
 # @Software: PyCharm
 
 import numpy as np

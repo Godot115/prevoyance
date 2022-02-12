@@ -2,7 +2,7 @@
 # @Time    : 1/24/22 02:37
 # @Author  : godot
 # @FileName: introduction.py
-# @Project : prevoyance_dash
+# @Project : prevoyance
 # @Software: PyCharm
 from dash import html
 

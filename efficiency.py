@@ -2,13 +2,13 @@
 # @Time    : 2/4/22 00:20
 # @Author  : godot
 # @FileName: efficiency.py
-# @Project : prevoyance_dash
+# @Project : prevoyance
 # @Software: PyCharm
 # -*- coding: utf-8 -*-
 # @Time    : 1/24/22 02:29
 # @Author  : godot
 # @FileName: design.py
-# @Project : prevoyance_dash
+# @Project : prevoyance
 # @Software: PyCharm
 from dash import dcc
 from dash import html

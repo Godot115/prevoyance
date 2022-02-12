@@ -2,7 +2,7 @@
 # @Time    : 1/24/22 02:29
 # @Author  : godot
 # @FileName: design.py
-# @Project : prevoyance_dash
+# @Project : prevoyance
 # @Software: PyCharm
 from dash import dcc
 from dash import html

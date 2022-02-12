@@ -2,7 +2,7 @@
 # @Time    : 1/28/22 17:44
 # @Author  : godot
 # @FileName: paramaters.py
-# @Project : prevoyance_dash
+# @Project : prevoyance
 # @Software: PyCharm
 from dash import dcc
 from dash import html
