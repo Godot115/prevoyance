@@ -85,7 +85,7 @@ def inverseInformationMatrix(informationMatrix):
     return np.linalg.inv(informationMatrix)
 
 
-def variance(x, vectorOfPartialDerivative, inverseInformationMatrix, plus_minus_sign, *args):
+def variance(x, inverseInformationMatrix, plus_minus_sign, *args):
     left = np.matmul(vectorOfPartialDerivative(x, plus_minus_sign, *args).T, inverseInformationMatrix)
     result = np.matmul(left, vectorOfPartialDerivative(x, plus_minus_sign, *args))
     return result[0][0]

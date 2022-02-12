@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 1/28/22 17:44
 # @Author  : godot
-# @FileName: paramaters.py
+# @FileName: parameters.py
 # @Project : prevoyance
 # @Software: PyCharm
 from dash import dcc
@@ -9,6 +9,52 @@ from dash import html
 
 
 def paramaters(model):
+    # if model == "testmodel":
+    #     return html.Div(children=
+    #     [
+    #         html.Label("𝒃:"),
+    #         " ",
+    #         dcc.Input(id='a',
+    #                   placeholder='Enter a value...',
+    #                   type='number',
+    #                   value='1.0'
+    #                   ),
+    #         html.Br(),
+    #         html.Label("𝒄:"),
+    #         " ",
+    #         dcc.Input(id='b',
+    #                   placeholder='Enter a value...',
+    #                   type='number',
+    #                   value='1.0'
+    #                   ),
+    #         html.Br(),
+    #         html.Label("𝒃:"),
+    #         " ",
+    #         dcc.Input(id='c',
+    #                   placeholder='Enter a value...',
+    #                   type='number',
+    #                   value='1.0'
+    #                   ),
+    #         html.Br(),
+    #         html.Label("e:"),
+    #         " ",
+    #         dcc.Input(id='d',
+    #                   placeholder='Enter a value...',
+    #                   type='number',
+    #                   value='1.0'
+    #                   ),
+    #         html.Br(),
+    #         html.Select([
+    #             html.Option('+', value='positive'),
+    #             html.Option('-', value='negative'),
+    #         ],
+    #             id='plus_minus_sign',
+    #             style={'visibility': 'hidden'}
+    #         ),
+    #         html.Br()
+    #     ]
+    #     )
+
     if model == "Model5":
         return html.Div(children=
         [

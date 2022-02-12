@@ -34,8 +34,9 @@ def vectorOfPartialDerivative(x, plus_minus_sign, *args):
      ..................
      [∂η(x,Theta) / ∂θm]]
     """
-    return np.array([[partiala(math.exp(x / args[1]), *args),
-                      partialb(math.exp(x / args[1]), *args)]]).T
+    x = math.exp(x / args[1])
+    return np.array([[partiala(x, *args),
+                      partialb(x, *args)]]).T
 
 
 def informationMatrix(designPoints, plus_minus_sign, *args):
@@ -62,7 +63,7 @@ def inverseInformationMatrix(informationMatrix):
     return np.linalg.inv(informationMatrix)
 
 
-def variance(x, vectorOfPartialDerivative, inverseInformationMatrix, plus_minus_sign, *args):
+def variance(x, inverseInformationMatrix, plus_minus_sign, *args):
     left = np.matmul(vectorOfPartialDerivative(x, plus_minus_sign, *args).T, inverseInformationMatrix)
     result = np.matmul(left, vectorOfPartialDerivative(x, plus_minus_sign, *args))
     return result[0][0]

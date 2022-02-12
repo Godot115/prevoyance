@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 1/24/22 02:29
 # @Author  : godot
-# @FileName: design.py
+# @FileName: design_frame.py
 # @Project : prevoyance
 # @Software: PyCharm
 import plotly.graph_objects as go
@@ -29,7 +29,8 @@ def designFrame():
                                {'label': 'Model 2', 'value': 'Model2'},
                                {'label': 'Model 3', 'value': 'Model3'},
                                {'label': 'Model 4', 'value': 'Model4'},
-                               {'label': 'Model 5', 'value': 'Model5'}
+                               {'label': 'Model 5', 'value': 'Model5'},
+                               # {'label': 'testmodel', 'value': 'testmodel'}
                            ],
                            value='Model5',
                            labelStyle={'display': 'flex'}

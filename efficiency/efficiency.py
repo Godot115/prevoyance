@@ -7,7 +7,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 1/24/22 02:29
 # @Author  : godot
-# @FileName: design.py
+# @FileName: design_frame.py
 # @Project : prevoyance
 # @Software: PyCharm
 from dash import dcc
@@ -31,7 +31,8 @@ def efficiencyFrame():
                                {'label': 'Model 2', 'value': 'Model2'},
                                {'label': 'Model 3', 'value': 'Model3'},
                                {'label': 'Model 4', 'value': 'Model4'},
-                               {'label': 'Model 5', 'value': 'Model5'}
+                               {'label': 'Model 5', 'value': 'Model5'},
+                               # {'label': 'testmodel', 'value': 'testmodel'}
                            ],
                            value='Model5',
                            labelStyle={'display': 'flex'}
@@ -42,13 +43,13 @@ def efficiencyFrame():
             # 输入参数，输入框跟随Model变化
             html.Div(id='paramater_inputer_efficiency'),
             html.B("Settings for design:"), html.Br(),
-            html.Label("lower dose boundary (bigger than 0):"), html.Br(),
+            html.Label("lower dose boundary (min 0.01):"), html.Br(),
             dcc.Input(
                 id='lowerBoundary_efficiency',
                 placeholder='Enter a value...',
                 type='number',
-                min=0.0000000001,
-                value='0.00001',
+                min=0.01,
+                value='0.01',
             ),
             html.Br(),
             html.Label("upper dose boundary:"), html.Br(),
