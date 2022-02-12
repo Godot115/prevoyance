@@ -44,7 +44,7 @@ def partialdNegative(x, *args):
             (a * c - a) * x ** d * math.log(x) + (a * math.log(b) - a * math.log(b) * c) * x ** d) / b ** d
 
 
-def vectorOfPartialDerivative(x,plus_minus_sign, *args):
+def vectorOfPartialDerivative(x, plus_minus_sign, *args):
     """
     :param x: value of the design point
     :return: f(x,Theta).T
@@ -64,12 +64,18 @@ def informationMatrix(designPoints, plus_minus_sign, *args):
     :param designPoints: design points
     :return: information matrix
     """
-    weights = [1 / len(designPoints) for i in range(len(designPoints))]
     result = np.zeros((4, 4))
-    for i in range(len(designPoints)):
-        result += vectorOfPartialDerivative(designPoints[i],plus_minus_sign, *args) * \
-                  vectorOfPartialDerivative(designPoints[i],plus_minus_sign, *args).T * \
-                  weights[i]
+    if type(designPoints[0]) == np.float64:
+        weights = [1 / len(designPoints) for i in range(len(designPoints))]
+        for i in range(len(designPoints)):
+            result += vectorOfPartialDerivative(designPoints[i], plus_minus_sign, *args) * \
+                      vectorOfPartialDerivative(designPoints[i], plus_minus_sign, *args).T * \
+                      weights[i]
+    else:
+        for i in range(len(designPoints)):
+            result += vectorOfPartialDerivative(designPoints[i][0], plus_minus_sign, *args) * \
+                      vectorOfPartialDerivative(designPoints[i][0], plus_minus_sign, *args).T * \
+                      designPoints[i][1]
     return np.array(result)
 
 
@@ -78,6 +84,6 @@ def inverseInformationMatrix(informationMatrix):
 
 
 def variance(x, vectorOfPartialDerivative, inverseInformationMatrix, plus_minus_sign, *args):
-    left = np.matmul(vectorOfPartialDerivative(x,plus_minus_sign, *args).T, inverseInformationMatrix)
-    result = np.matmul(left, vectorOfPartialDerivative(x,plus_minus_sign, *args))
+    left = np.matmul(vectorOfPartialDerivative(x, plus_minus_sign, *args).T, inverseInformationMatrix)
+    result = np.matmul(left, vectorOfPartialDerivative(x, plus_minus_sign, *args))
     return result[0][0]

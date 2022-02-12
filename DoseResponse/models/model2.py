@@ -33,13 +33,18 @@ def informationMatrix(designPoints, plus_minus_sign, *args):
     :param designPoints: design points
     :return:
     """
-    weights = [1 / len(designPoints) for i in range(len(designPoints))]
-
     result = np.zeros((2, 2))
-    for i in range(len(designPoints)):
-        result += vectorOfPartialDerivative(designPoints[i], plus_minus_sign, *args) * \
-                  vectorOfPartialDerivative(designPoints[i], plus_minus_sign, *args).T * \
-                  weights[i]
+    if type(designPoints[0]) == np.float64:
+        weights = [1 / len(designPoints) for i in range(len(designPoints))]
+        for i in range(len(designPoints)):
+            result += vectorOfPartialDerivative(designPoints[i], plus_minus_sign, *args) * \
+                      vectorOfPartialDerivative(designPoints[i], plus_minus_sign, *args).T * \
+                      weights[i]
+    else:
+        for i in range(len(designPoints)):
+            result += vectorOfPartialDerivative(designPoints[i][0], plus_minus_sign, *args) * \
+                      vectorOfPartialDerivative(designPoints[i][0], plus_minus_sign, *args).T * \
+                      designPoints[i][1]
     return np.array(result)
 
 

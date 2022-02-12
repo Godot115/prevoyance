@@ -103,6 +103,7 @@ def efficiencyFrame():
                     }
                 )
             ]),
+            html.Div(id='result_efficiency'),
 
 
         ],

@@ -1,9 +1,7 @@
 import random
 import sys
-import time
 from collections import Counter
 
-import matplotlib.pyplot as plt
 import numpy as np
 
 from DoseResponse.models import model2
@@ -57,9 +55,9 @@ def delPoint(informationMatrix, point, plus_minus_sign, currentPoints, model, *a
     """
     currentPointsNumber = len(currentPoints)
     informationMatrix = (currentPointsNumber / (currentPointsNumber - 1)) * informationMatrix - (
-                1 / (currentPointsNumber - 1)) * model.vectorOfPartialDerivative(
-            point, plus_minus_sign, *args) * \
-                            model.vectorOfPartialDerivative(point, plus_minus_sign, *args).T
+            1 / (currentPointsNumber - 1)) * model.vectorOfPartialDerivative(
+        point, plus_minus_sign, *args) * \
+                        model.vectorOfPartialDerivative(point, plus_minus_sign, *args).T
     return informationMatrix
 
 
@@ -79,30 +77,33 @@ def addPoint(informationMatrix, newPoint, currentPoints, model, designSpace, plu
     threshold = designSpace / 50
     currentPointsNumber = len(currentPoints)
     informationMatrix = ((
-                                     currentPointsNumber - 1) / currentPointsNumber) * informationMatrix + model.vectorOfPartialDerivative(
-            newPoint, plus_minus_sign, *args) * \
-                            model.vectorOfPartialDerivative(newPoint, plus_minus_sign, *args).T * \
-                            (1 / currentPointsNumber)
+                                 currentPointsNumber - 1) / currentPointsNumber) * informationMatrix + model.vectorOfPartialDerivative(
+        newPoint, plus_minus_sign, *args) * \
+                        model.vectorOfPartialDerivative(newPoint, plus_minus_sign, *args).T * \
+                        (1 / currentPointsNumber)
     for i in range(len(currentPoints)):
         if abs(newPoint - currentPoints[i]) < threshold:
             informationMatrix = (currentPointsNumber / (currentPointsNumber - 1)) * informationMatrix - (
-                        1 / (currentPointsNumber - 1)) * model.vectorOfPartialDerivative(
-                    currentPoints[i], plus_minus_sign, *args) * \
-                                    model.vectorOfPartialDerivative(currentPoints[i], plus_minus_sign, *args).T
+                    1 / (currentPointsNumber - 1)) * model.vectorOfPartialDerivative(
+                currentPoints[i], plus_minus_sign, *args) * \
+                                model.vectorOfPartialDerivative(currentPoints[i], plus_minus_sign, *args).T
             informationMatrix = ((
-                                             currentPointsNumber - 1) / currentPointsNumber) * informationMatrix + model.vectorOfPartialDerivative(
-                    newPoint, plus_minus_sign, *args) * \
-                                    model.vectorOfPartialDerivative(newPoint, plus_minus_sign, *args).T * \
-                                    (1 / currentPointsNumber)
+                                         currentPointsNumber - 1) / currentPointsNumber) * informationMatrix + model.vectorOfPartialDerivative(
+                newPoint, plus_minus_sign, *args) * \
+                                model.vectorOfPartialDerivative(newPoint, plus_minus_sign, *args).T * \
+                                (1 / currentPointsNumber)
             currentPoints[i] = newPoint
     currentPoints.append(newPoint)
     currentPoints.sort()
     return currentPoints, informationMatrix
 
+
 def createInitialPoints(lowerBoundary, upperBoundary):
-    points =  list(np.linspace(lowerBoundary, upperBoundary, num=10))
+    points = list(np.linspace(lowerBoundary, upperBoundary, num=10))
     points.sort()
     return points
+
+
 def firstOrder(designPoints, lowerBoundary, upperBoundary,
                plus_minus_sign, model,
                maxIteration=100, grid=1000, *args):
@@ -133,12 +134,11 @@ def firstOrder(designPoints, lowerBoundary, upperBoundary,
     informationMatrix = model.informationMatrix(designPoints, plus_minus_sign, *args)
     invInformationMatrix = model.inverseInformationMatrix(informationMatrix)
     i = 0
-    # x = []
-    # y = []
     while i < maxIteration:
         if i < 50 and i >= 40:
             if initialPoints[0] in designPoints:
-                informationMatrix = delPoint(informationMatrix, initialPoints[0], plus_minus_sign, designPoints, model, *args)
+                informationMatrix = delPoint(informationMatrix, initialPoints[0], plus_minus_sign, designPoints, model,
+                                             *args)
                 designPoints.remove(initialPoints[0])
             initialPoints.remove(initialPoints[0])
             invInformationMatrix = model.inverseInformationMatrix(informationMatrix)
@@ -147,7 +147,7 @@ def firstOrder(designPoints, lowerBoundary, upperBoundary,
         maxVariancePoint = random.uniform(0, 1000)
         for j in range(len(designSpace)):
             dVariance = model.variance(designSpace[j], model.vectorOfPartialDerivative
-                                           , invInformationMatrix, plus_minus_sign, *args)
+                                       , invInformationMatrix, plus_minus_sign, *args)
             if dVariance > maxVariance:
                 maxVariance = dVariance
                 maxVariancePoint = designSpace[j]
@@ -155,15 +155,17 @@ def firstOrder(designPoints, lowerBoundary, upperBoundary,
                                                    upperBoundary - lowerBoundary, plus_minus_sign, *args)
         invInformationMatrix = model.inverseInformationMatrix(informationMatrix)
 
-    # plot
-    # for point in range(len(designSpace)):
-    #     variance = model.variance(designSpace[point], model.vectorOfPartialDerivative
-    #                                    , invInformationMatrix, plus_minus_sign, *args)
-    #     x.append(designSpace[point])
-    #     y.append(variance)
-    # plt.plot(x, y)
-    # plt.show()
-
     result = formatResult(designPoints)
     return result
 
+def calculateInformationMatrix(designPoints, plus_minus_sign, model, *args):
+    if model == "Model2":
+        model = model2
+    elif model == "Model3":
+        model = model3
+    elif model == "Model4":
+        model = model4
+    elif model == "Model5":
+        model = model5
+    informationMatrix = model.informationMatrix(designPoints, plus_minus_sign, *args)
+    return informationMatrix

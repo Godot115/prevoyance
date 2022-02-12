@@ -6,6 +6,7 @@
 # @Software: PyCharm
 
 import dash
+import numpy as np
 import pandas as pd
 import plotly.express as px
 from dash import dcc
@@ -118,6 +119,7 @@ def GenerateDesign(n_clicks, a, b, c, d, plus_minus_sign, model,
     points = FirstOrder.createInitialPoints(lowerBoundary, upperBoundary)
     result = FirstOrder.firstOrder(points, lowerBoundary, upperBoundary, plus_minus_sign, model, maxIteration, 1000,
                                    *args)
+    print(result)
     result = dict(result)
     result = pd.DataFrame(list(result.items()),
                           columns=['Point', 'Weight'])
@@ -129,11 +131,11 @@ def GenerateDesign(n_clicks, a, b, c, d, plus_minus_sign, model,
 def generatePointsInputer(number_of_design_points_efficiency):
     points = []
     numberOfDesignPoints = int(number_of_design_points_efficiency)
-
+    initialCurrentPoints = [float(0), 713.213, 1291.291, 2500.0, 10.0, 10.0, 10.0, 10.0, 10.0]
     for j in range(numberOfDesignPoints):
         points.append(html.Div([
             html.B('Dose ' + str(j + 1) + ': '),
-            dcc.Input(type='number', value=10,
+            dcc.Input(type='number', value=initialCurrentPoints[j],
                       id={
                           'type': 'dose',
                           'index': j
@@ -148,18 +150,59 @@ def generatePointsInputer(number_of_design_points_efficiency):
 
     return points
 
-
-@app.callback(Output('hidden-div', 'children'),
+@app.callback(Output('result_efficiency', 'children'),
               Input('compute_button_efficiency', 'n_clicks'),
               State({"type": 'dose', 'index': ALL}, 'value'),
               State({"type": 'weight', 'index': ALL}, 'value'),
-
+              State('a', 'value'),
+              State('b', 'value'),
+              State('c', 'value'),
+              State('d', 'value'),
+              State('plus_minus_sign', 'value'),
+              State('model_selector_efficiency', 'value'),
+              State('lowerBoundary_efficiency', 'value'),
+              State('upperBoundary_efficiency', 'value'),
+              State('maxIteration_efficiency', 'value'),
               prevent_initial_call=True)
-def computeEfficiency(n_clicks, doses, weights):
-    print(doses)
-    print(weights)
+def computeEfficiency(n_clicks, dose, weight, a, b, c, d, plus_minus_sign, model, lowerBoundary, upperBoundary,
+                      maxIteration):
+    currentDesignPoints = []
+    currentDesignPoints.clear()
+    for i in range(len(dose)):
+        currentDesignPoints.append((dose[i], weight[i]))
+    a = float(a)
+    b = float(b)
+    c = float(c)
+    d = float(d)
+    args = (a, b, c, d)
+    maxIteration = int(maxIteration)
+    lowerBoundary = float(lowerBoundary)
+    upperBoundary = float(upperBoundary)
+    randonInitialpoints = FirstOrder.createInitialPoints(lowerBoundary, upperBoundary)
+    optimalDesignPoints = FirstOrder.firstOrder(randonInitialpoints, lowerBoundary, upperBoundary, plus_minus_sign, model,
+                                                maxIteration, 1000,
+                                                *args)
 
-    return
+    optimalDesignPoints = [(0.000001 if i[0] - 0 <= 1e-2 else float(i[0]), float(i[1])) for i in
+                           optimalDesignPoints]
+    currentDesignPoints = [(0.000001 if i[0] - 0 <= 1e-2 else float(i[0]), float(i[1])) for i in
+                           currentDesignPoints]
+    optimalInformationMatrix = FirstOrder.calculateInformationMatrix(optimalDesignPoints, plus_minus_sign, model, *args)
+    currentInformationMatrix = FirstOrder.calculateInformationMatrix(currentDesignPoints, plus_minus_sign, model, *args)
+    if model == "Model2":
+        paramNum = 2
+    elif model == "Model3" or model == "Model4":
+        paramNum = 3
+    else:
+        paramNum = 4
+
+    efficiency = pow(np.linalg.det(currentInformationMatrix) / np.linalg.det(optimalInformationMatrix), 1 / paramNum)
+    efficiency = round(efficiency, 3)
+    print(efficiency)
+    return html.Div([
+        html.B("D-Efficiency of proposed design:"),
+        html.Br(),
+        html.P(efficiency)])
 
 
 if __name__ == '__main__':

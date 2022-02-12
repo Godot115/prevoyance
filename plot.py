@@ -31,7 +31,6 @@ def chooseModel(x, model, plus_minus_sign, *args):
 
 
 def plotFunc(model, plus_minus_sign, lowerBoundary, upperBoundary, *args):
-    print(args)
     a = args[0]
     b = args[1]
     c = args[2]
