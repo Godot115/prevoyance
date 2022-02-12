@@ -158,6 +158,7 @@ def firstOrder(designPoints, lowerBoundary, upperBoundary,
     result = formatResult(designPoints)
     return result
 
+
 def calculateInformationMatrix(designPoints, plus_minus_sign, model, *args):
     if model == "Model2":
         model = model2

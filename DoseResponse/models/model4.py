@@ -6,25 +6,43 @@ import numpy as np
 # a,b,c
 
 
+# def partialaNegative(x, *args):
+#     a = args[0]
+#     b = args[1]
+#     c = args[2]
+#     return math.exp(-x / b) * (c * math.exp(x / b) - c + 1)
+
 def partialaNegative(x, *args):
     a = args[0]
     b = args[1]
     c = args[2]
-    return math.exp(-x / b) * (c * math.exp(x / b) - c + 1)
+    return c - (c - 1) * x
 
+
+# def partialbNegative(x, *args):
+#     a = args[0]
+#     b = args[1]
+#     c = args[2]
+#     return -(a * c - a) * x * math.exp(-x / b) / b ** 2
 
 def partialbNegative(x, *args):
     a = args[0]
     b = args[1]
     c = args[2]
-    return -(a * c - a) * x * math.exp(-x / b) / b ** 2
+    return (a * c - a) * math.log(x) * x / b
 
+
+# def partialcNegative(x, *args):
+#     a = args[0]
+#     b = args[1]
+#     c = args[2]
+#     return math.exp(-x / b) * (a * math.exp(x / b) - a)
 
 def partialcNegative(x, *args):
     a = args[0]
     b = args[1]
     c = args[2]
-    return math.exp(-x / b) * (a * math.exp(x / b) - a)
+    return x * (a / x - a)
 
 
 def vectorOfPartialDerivative(x, plus_minus_sign, *args):
@@ -36,7 +54,7 @@ def vectorOfPartialDerivative(x, plus_minus_sign, *args):
      ..................
      [∂η(x,Theta) / ∂θm]]
     """
-
+    x = math.exp(-x / args[1])
     return np.array([[partialaNegative(x, *args),
                       partialbNegative(x, *args),
                       partialcNegative(x, *args)]]).T

@@ -3,16 +3,26 @@ import math
 import numpy as np
 
 
+# def partiala(x, *args):
+#     a = args[0]
+#     b = args[1]
+#     return math.exp(x / b)
+
 def partiala(x, *args):
     a = args[0]
     b = args[1]
-    return math.exp(x / b)
+    return x
 
+
+# def partialb(x, *args):
+#     a = args[0]
+#     b = args[1]
+#     return -1 * ((a * x * math.exp(x / b)) / (b ** 2))
 
 def partialb(x, *args):
     a = args[0]
     b = args[1]
-    return -1 * ((a * x * math.exp(x / b)) / (b ** 2))
+    return -a * math.log(x) * x / b
 
 
 def vectorOfPartialDerivative(x, plus_minus_sign, *args):
@@ -24,8 +34,8 @@ def vectorOfPartialDerivative(x, plus_minus_sign, *args):
      ..................
      [∂η(x,Theta) / ∂θm]]
     """
-    return np.array([[partiala(x, *args),
-                      partialb(x, *args)]]).T
+    return np.array([[partiala(math.exp(x / args[1]), *args),
+                      partialb(math.exp(x / args[1]), *args)]]).T
 
 
 def informationMatrix(designPoints, plus_minus_sign, *args):

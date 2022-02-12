@@ -1,4 +1,5 @@
-import math
+from math import exp
+from math import log
 
 import numpy as np
 
@@ -10,38 +11,68 @@ import numpy as np
 # d = args[3]
 
 
+# def partialaNegative(x, *args):
+#     a = args[0]
+#     b = args[1]
+#     c = args[2]
+#     d = args[3]
+#     return c - (c - 1) * exp(-(x / b) ** d)
+
 def partialaNegative(x, *args):
     a = args[0]
     b = args[1]
     c = args[2]
     d = args[3]
 
-    return math.exp(-((x / b) ** d)) * (c * math.exp((x / b) ** d) - c + 1)
+    return c - (c - 1) * x
 
+
+# def partialbNegative(x, *args):
+#     a = args[0]
+#     b = args[1]
+#     c = args[2]
+#     d = args[3]
+#     return a * d * (x / b) ** d * (1 - c) * exp(-(x / b) ** d) / b
 
 def partialbNegative(x, *args):
     a = args[0]
     b = args[1]
     c = args[2]
     d = args[3]
-    return -b ** (-d - 1) * (a * c - a) * d * x ** d * math.exp(-((x / b) ** d))
 
+    return a * d * (-log(x)) * (1 - c) * x / b
+
+
+# def partialcNegative(x, *args):
+#     a = args[0]
+#     b = args[1]
+#     c = args[2]
+#     d = args[3]
+#     return a * (1 - exp(-(x / b) ** d))
 
 def partialcNegative(x, *args):
     a = args[0]
     b = args[1]
     c = args[2]
     d = args[3]
-    return math.exp(-((x / b) ** d)) * (a * math.exp((x / b) ** d) - a)
 
+    return a * (1 - x)
+
+
+# def partialdNegative(x, *args):
+#     a = args[0]
+#     b = args[1]
+#     c = args[2]
+#     d = args[3]
+#     return -a * (x / b) ** d * (1 - c) * exp(-(x / b) ** d) * log(x / b)
 
 def partialdNegative(x, *args):
     a = args[0]
     b = args[1]
     c = args[2]
     d = args[3]
-    return math.exp(-((x / b) ** d)) * (
-            (a * c - a) * x ** d * math.log(x) + (a * math.log(b) - a * math.log(b) * c) * x ** d) / b ** d
+
+    return -a * (-log(x)) * (1 - c) * x * log((-log(x)) ** (1 / d))
 
 
 def vectorOfPartialDerivative(x, plus_minus_sign, *args):
@@ -53,6 +84,7 @@ def vectorOfPartialDerivative(x, plus_minus_sign, *args):
      ..................
      [∂η(x,Theta) / ∂θm]]
     """
+    x = exp(-(x / args[1]) ** args[3])
     return np.array([[partialaNegative(x, *args),
                       partialbNegative(x, *args),
                       partialcNegative(x, *args),

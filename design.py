@@ -40,13 +40,13 @@ def designFrame():
             # 输入参数，输入框跟随Model变化
             html.Div(id='paramater_inputer'),
             html.B("Settings for design:"), html.Br(),
-            html.Label("lower dose boundary (big than 0):"), html.Br(),
+            html.Label("lower dose boundary (min 0.01):"), html.Br(),
             dcc.Input(
                 id='lowerBoundary',
                 placeholder='Enter a value...',
                 type='number',
-                min=0.0000000001,
-                value='0.00001',
+                min=0.01,
+                value='0.01',
             ),
             html.Br(),
             html.Label("upper dose boundary:"), html.Br(),

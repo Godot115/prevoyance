@@ -142,7 +142,6 @@ def GenerateDesign(n_clicks, a, b, c, d, plus_minus_sign, model,
     points = FirstOrder.createInitialPoints(lowerBoundary, upperBoundary)
     result = FirstOrder.firstOrder(points, lowerBoundary, upperBoundary, plus_minus_sign, model, maxIteration, 1000,
                                    *args)
-    print(result)
     result = dict(result)
     result = pd.DataFrame(list(result.items()),
                           columns=['Point', 'Weight'])
@@ -154,7 +153,7 @@ def GenerateDesign(n_clicks, a, b, c, d, plus_minus_sign, model,
 def generatePointsInputer(number_of_design_points_efficiency):
     points = []
     numberOfDesignPoints = int(number_of_design_points_efficiency)
-    initialCurrentPoints = [float(0), 713.213, 1291.291, 2500.0, 10.0, 10.0, 10.0, 10.0, 10.0]
+    initialCurrentPoints = [float(0.01), 713.213, 1291.291, 2500.0, 10.0, 10.0, 10.0, 10.0, 10.0]
     for j in range(numberOfDesignPoints):
         points.append(html.Div([
             html.B('Dose ' + str(j + 1) + ': '),
@@ -208,9 +207,9 @@ def computeEfficiency(n_clicks, dose, weight, a, b, c, d, plus_minus_sign, model
                                                 maxIteration, 1000,
                                                 *args)
 
-    optimalDesignPoints = [(0.000001 if i[0] - 0 <= 1e-2 else float(i[0]), float(i[1])) for i in
+    optimalDesignPoints = [(0.01 if i[0] - 0 <= 1e-2 else float(i[0]), float(i[1])) for i in
                            optimalDesignPoints]
-    currentDesignPoints = [(0.000001 if i[0] - 0 <= 1e-2 else float(i[0]), float(i[1])) for i in
+    currentDesignPoints = [(0.01 if i[0] - 0 <= 1e-2 else float(i[0]), float(i[1])) for i in
                            currentDesignPoints]
     optimalInformationMatrix = FirstOrder.calculateInformationMatrix(optimalDesignPoints, plus_minus_sign, model, *args)
     currentInformationMatrix = FirstOrder.calculateInformationMatrix(currentDesignPoints, plus_minus_sign, model, *args)
@@ -223,7 +222,6 @@ def computeEfficiency(n_clicks, dose, weight, a, b, c, d, plus_minus_sign, model
 
     efficiency = pow(np.linalg.det(currentInformationMatrix) / np.linalg.det(optimalInformationMatrix), 1 / paramNum)
     efficiency = round(efficiency, 3)
-    print(efficiency)
     return html.Div([
         html.Br(),
         html.B("D-Efficiency of proposed design: "),
@@ -231,4 +229,4 @@ def computeEfficiency(n_clicks, dose, weight, a, b, c, d, plus_minus_sign, model
 
 
 if __name__ == '__main__':
-    app.run_server(host='0.0.0.0', debug=False)
+    app.run_server(host='0.0.0.0', debug=True)
