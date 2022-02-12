@@ -155,21 +155,21 @@ def GenerateBayesian(parameter, model, plus_minus_sign, lowerBoundary, upperBoun
                           columns=['Point', 'Weight'])
     return result.to_dict('records'), [{'name': i, 'id': i} for i in result.columns], False
 
-if __name__ == '__main__':
-    # model = 'Model2'
-    # param = [(349.02687, 1067.04343), (311.02687, 1000.04343)]
-    model = 'Model5'
-    param = [(349.02687, 1067.04343, 0.76332, 2.60551), (349.02687, 1067.04343, 0.76332, 2.60551)]
-
-    plus_minus = 'negative'
-    lowerBoundary = 0.01
-    upperBoundary = 2500.0
-    maxIteration = 100
-    print(param)
-    print(model)
-    print(plus_minus)
-    print(lowerBoundary)
-    print(upperBoundary)
-    print(maxIteration)
-
-    firstOrder(param, model, plus_minus, lowerBoundary, upperBoundary, maxIteration, grid=1000)
+# if __name__ == '__main__':
+#     # model = 'Model2'
+#     # param = [(349.02687, 1067.04343), (311.02687, 1000.04343)]
+#     model = 'Model5'
+#     param = [(349.02687, 1067.04343, 0.76332, 2.60551), (349.02687, 1067.04343, 0.76332, 2.60551)]
+#
+#     plus_minus = 'negative'
+#     lowerBoundary = 0.01
+#     upperBoundary = 2500.0
+#     maxIteration = 100
+#     print(param)
+#     print(model)
+#     print(plus_minus)
+#     print(lowerBoundary)
+#     print(upperBoundary)
+#     print(maxIteration)
+#
+#     firstOrder(param, model, plus_minus, lowerBoundary, upperBoundary, maxIteration, grid=1000)

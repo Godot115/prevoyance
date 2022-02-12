@@ -64,7 +64,7 @@ def paramaters(model):
                       placeholder='Enter a value...',
                       type='number',
                       value='349.02687'
-                      ),
+                     ),
             html.Br(),
             html.Label("𝒃:"),
             " ",
