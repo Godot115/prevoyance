@@ -6,19 +6,18 @@
 # @Software: PyCharm
 
 import dash
+import pandas as pd
+import plotly.express as px
 from dash import dcc
 from dash import html
-from dash.dependencies import Input, Output, State
-import plotly.express as px
+from dash.dependencies import Input, Output, State, ALL
 
 import design
+import efficiency
 import introduction
 import paramaters
 import plot
 from DoseResponse import FirstOrder
-import pandas as pd
-import plotly.graph_objs as go
-
 
 external_scripts = [
     {
@@ -38,7 +37,7 @@ app.layout = html.Div(children=[
     introduction.intro(),
     dcc.Tabs(id="function_selector", value='Design', children=[
         dcc.Tab(label='Generate Optimal Design', value='Design'),
-        dcc.Tab(label='Check Design Effiency', value='Effiency'),
+        dcc.Tab(label='Check Design Efficiency', value='Efficiency'),
     ]),
     html.Div(id='tabs-content'),
     html.Div(id='hidden-div', style={'display': 'none'}),
@@ -50,9 +49,9 @@ app.layout = html.Div(children=[
 def functionSelect(function_selector):
     if function_selector == 'Design':
         return design.designFrame()
-    elif function_selector == 'Effiency':
+    elif function_selector == 'Efficiency':
         return html.Div([
-            html.H3('Effiency')
+            efficiency.efficiencyFrame()
         ])
 
 
@@ -62,7 +61,13 @@ def paramater(model_selector):
     return paramaters.paramaters(model_selector)
 
 
-@app.callback([Output("plof_of_function", "figure"),Output("plot_title", "hidden")],
+@app.callback(Output('paramater_inputer_efficiency', 'children'),
+              Input('model_selector_efficiency', 'value'))
+def paramater_efficiency(model_selector):
+    return paramaters.paramaters(model_selector)
+
+
+@app.callback([Output("plof_of_function", "figure"), Output("plot_title", "hidden")],
               Input('compute_button', 'n_clicks'),
               State('a', 'value'),
               State('b', 'value'),
@@ -72,9 +77,10 @@ def paramater(model_selector):
               State('model_selector', 'value'),
               State('lowerBoundary', 'value'),
               State('upperBoundary', 'value'),
-              State('maxIteration', 'value'))
+              State('maxIteration', 'value'),
+              prevent_initial_call=True)
 def plotFunction(n_clicks, a, b, c, d, plus_minus_sign, model,
-                     lowerBoundary, upperBoundary, maxIteration):
+                 lowerBoundary, upperBoundary, maxIteration):
     a = float(a)
     b = float(b)
     c = float(c)
@@ -87,19 +93,20 @@ def plotFunction(n_clicks, a, b, c, d, plus_minus_sign, model,
     return fig, False
 
 
-@app.callback([Output("result", "data"),Output("result", "columns"),Output("result_title", "hidden")],
+@app.callback([Output("result", "data"), Output("result", "columns"), Output("result_title", "hidden")],
               Input('compute_button', 'n_clicks'),
-              State('a', 'value'),
-              State('b', 'value'),
-              State('c', 'value'),
-              State('d', 'value'),
-              State('plus_minus_sign', 'value'),
-              State('model_selector', 'value'),
-              State('lowerBoundary', 'value'),
-              State('upperBoundary', 'value'),
-              State('maxIteration', 'value'))
+              [State('a', 'value'),
+               State('b', 'value'),
+               State('c', 'value'),
+               State('d', 'value'),
+               State('plus_minus_sign', 'value'),
+               State('model_selector', 'value'),
+               State('lowerBoundary', 'value'),
+               State('upperBoundary', 'value'),
+               State('maxIteration', 'value')],
+              prevent_initial_call=True)
 def GenerateDesign(n_clicks, a, b, c, d, plus_minus_sign, model,
-                     lowerBoundary, upperBoundary, maxIteration):
+                   lowerBoundary, upperBoundary, maxIteration):
     a = float(a)
     b = float(b)
     c = float(c)
@@ -109,12 +116,50 @@ def GenerateDesign(n_clicks, a, b, c, d, plus_minus_sign, model,
     lowerBoundary = float(lowerBoundary)
     upperBoundary = float(upperBoundary)
     points = FirstOrder.createInitialPoints(lowerBoundary, upperBoundary)
-    result = FirstOrder.firstOrder(points,lowerBoundary,upperBoundary, plus_minus_sign, model, maxIteration,1000, *args)
+    result = FirstOrder.firstOrder(points, lowerBoundary, upperBoundary, plus_minus_sign, model, maxIteration, 1000,
+                                   *args)
     result = dict(result)
     result = pd.DataFrame(list(result.items()),
-                 columns=['Point', 'Weight'])
-    print(result.values)
+                          columns=['Point', 'Weight'])
     return result.to_dict('records'), [{'name': i, 'id': i} for i in result.columns], False
+
+
+@app.callback(Output('design_points_efficiency', 'children'),
+              Input('number_of_design_points_efficiency', 'value'))
+def generatePointsInputer(number_of_design_points_efficiency):
+    points = []
+    numberOfDesignPoints = int(number_of_design_points_efficiency)
+
+    for j in range(numberOfDesignPoints):
+        points.append(html.Div([
+            html.B('Dose ' + str(j + 1) + ': '),
+            dcc.Input(type='number', value=10,
+                      id={
+                          'type': 'dose',
+                          'index': j
+                      }), '        ',
+            html.B('Weight ' + str(j + 1) + ': '),
+            dcc.Input(type='number', value=0.25, max=1, min=0,
+                      id={
+                          'type': 'weight',
+                          'index': j
+                      }), html.Br()
+        ]))
+
+    return points
+
+
+@app.callback(Output('hidden-div', 'children'),
+              Input('compute_button_efficiency', 'n_clicks'),
+              State({"type": 'dose', 'index': ALL}, 'value'),
+              State({"type": 'weight', 'index': ALL}, 'value'),
+
+              prevent_initial_call=True)
+def computeEfficiency(n_clicks, doses, weights):
+    print(doses)
+    print(weights)
+
+    return
 
 
 if __name__ == '__main__':

@@ -136,7 +136,6 @@ def firstOrder(designPoints, lowerBoundary, upperBoundary,
     # x = []
     # y = []
     while i < maxIteration:
-        print(i)
         if i < 50 and i >= 40:
             if initialPoints[0] in designPoints:
                 informationMatrix = delPoint(informationMatrix, initialPoints[0], plus_minus_sign, designPoints, model, *args)

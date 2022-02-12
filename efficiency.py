@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+# @Time    : 2/4/22 00:20
+# @Author  : godot
+# @FileName: efficiency.py
+# @Project : prevoyance_dash
+# @Software: PyCharm
+# -*- coding: utf-8 -*-
 # @Time    : 1/24/22 02:29
 # @Author  : godot
 # @FileName: design.py
@@ -12,21 +18,15 @@ from dash import dash_table
 from dash.dependencies import Input, Output
 
 
-def blank_fig():
-    fig = go.Figure(go.Scatter(x=[], y=[]))
-    fig.update_layout(template=None)
-    fig.update_xaxes(showgrid=False, showticklabels=False, zeroline=False)
-    fig.update_yaxes(showgrid=False, showticklabels=False, zeroline=False)
-
-    return fig
 
 
-def designFrame():
+
+def efficiencyFrame():
     return html.Div(children=
     [
         html.Div(children=[
             html.B('Model:'),
-            dcc.RadioItems(id='model_selector',
+            dcc.RadioItems(id='model_selector_efficiency',
                            options=[
                                {'label': 'Model 2', 'value': 'Model2'},
                                {'label': 'Model 3', 'value': 'Model3'},
@@ -40,11 +40,11 @@ def designFrame():
             html.B("Parameters:"),
             html.Br(),
             # 输入参数，输入框跟随Model变化
-            html.Div(id='paramater_inputer'),
+            html.Div(id='paramater_inputer_efficiency'),
             html.B("Settings for design:"), html.Br(),
-            html.Label("lower dose boundary (big than 0):"), html.Br(),
+            html.Label("lower dose boundary (bigger than 0):"), html.Br(),
             dcc.Input(
-                id='lowerBoundary',
+                id='lowerBoundary_efficiency',
                 placeholder='Enter a value...',
                 type='number',
                 min=0.0000000001,
@@ -53,7 +53,7 @@ def designFrame():
             html.Br(),
             html.Label("upper dose boundary:"), html.Br(),
             dcc.Input(
-                id='upperBoundary',
+                id='upperBoundary_efficiency',
                 placeholder='Enter a value...',
                 type='number',
                 value='2500'
@@ -61,7 +61,7 @@ def designFrame():
             html.Br(),
             html.Label("Number of iterations for algorithm (min 100):"), html.Br(),
             dcc.Input(
-                id='maxIteration',
+                id='maxIteration_efficiency',
                 placeholder='Enter a value...',
                 type='number',
                 min=100,
@@ -69,7 +69,6 @@ def designFrame():
             ),
             html.Br(),
             html.Br(),
-            html.Button('Compute', id='compute_button', n_clicks=0),
         ],
             style={
             'background-color': '#f2f2f2',
@@ -80,28 +79,34 @@ def designFrame():
         }
         ),
         html.Div(children=[
-            # plot of function
-            html.Div(id = 'plot_div',
-                     children=[
-                         html.Div(id='plot_title', children=[html.B('Plot of Function:')],
-                                  hidden=True),
-                         dcc.Graph(id="plof_of_function", figure=blank_fig())
-                     ]),
-            html.Div(
-                     children=[
-                         html.Div(id='result_title', children=[html.B('Result:')],
-                                                               hidden= True),
-                         dash_table.DataTable(
-                             id='result',
-                             style_cell_conditional=[
-                                 {
-                                     'textAlign': 'left'
-                                 }
-                             ],
-                         )
-                     ])
+
+            html.Div(children=[html.B('Number of Design Points (max 9):'),html.Br(),
+            dcc.Input(type='number',id='number_of_design_points_efficiency',value=4,min=1,max=9),],
+                     style={
+                     'background-color': '#f2f2f2',
+                     'width': '30%',
+                     }),
+            html.Br(),
+            html.Br(),
+            html.Div([
+
+                html.B('Design Points:'),
+                html.P('The sum of the weights should be 1.'),
+                html.Div([
+                    html.Div(id='design_points_efficiency'),
+                    html.Br(),
+                    html.Button('Compute', id='compute_button_efficiency', n_clicks=0),
+                ],
+                    style={
+                        'background-color': '#f2f2f2',
+                        'width': '50%',
+                    }
+                )
+            ]),
+
+
         ],
-                 id='output_div',
+                 id='output_div_efficiency',
                  style={"background-color": '#1',
             'width': '65%',
             'float': 'right',
