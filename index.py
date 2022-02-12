@@ -19,18 +19,41 @@ import introduction
 import paramaters
 import plot
 from DoseResponse import FirstOrder
+import dash_defer_js_import as dji
 
-external_scripts = [
-    {
-        'type': 'text/javascript',
-        'id': 'MathJax-script',
-        'src': 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML'
-    }
-]
-app = dash.Dash(__name__, external_scripts=external_scripts, suppress_callback_exceptions=True)
+app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
 # assume you have a "long-form" data frame
 # see https://plotly.com/python/px-arguments/ for more options
+
+app.index_string = '''
+<!DOCTYPE html>
+<html>
+    <head>
+        {%metas%}
+        <title>{%title%}</title>
+        {%favicon%}
+        {%css%}
+    </head>
+    <body>
+        {%app_entry%}
+        <footer>
+            {%config%}
+            {%scripts%}
+            <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+                tex2jax: {
+                inlineMath: [ ['$','$'],],
+                processEscapes: true
+                }
+            });
+            </script>
+            {%renderer%}
+        </footer>
+    </body>
+</html>
+'''
+mathjax_script = dji.Import(src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_SVG")
 
 
 app.title = "Prevoyance"
@@ -41,7 +64,7 @@ app.layout = html.Div(children=[
         dcc.Tab(label='Check Design Efficiency', value='Efficiency'),
     ]),
     html.Div(id='tabs-content'),
-    html.Div(id='hidden-div', style={'display': 'none'}),
+    html.Div(id='hidden-div', style={'display': 'none'}),mathjax_script,
 ])
 
 
@@ -150,6 +173,7 @@ def generatePointsInputer(number_of_design_points_efficiency):
 
     return points
 
+
 @app.callback(Output('result_efficiency', 'children'),
               Input('compute_button_efficiency', 'n_clicks'),
               State({"type": 'dose', 'index': ALL}, 'value'),
@@ -179,7 +203,8 @@ def computeEfficiency(n_clicks, dose, weight, a, b, c, d, plus_minus_sign, model
     lowerBoundary = float(lowerBoundary)
     upperBoundary = float(upperBoundary)
     randonInitialpoints = FirstOrder.createInitialPoints(lowerBoundary, upperBoundary)
-    optimalDesignPoints = FirstOrder.firstOrder(randonInitialpoints, lowerBoundary, upperBoundary, plus_minus_sign, model,
+    optimalDesignPoints = FirstOrder.firstOrder(randonInitialpoints, lowerBoundary, upperBoundary, plus_minus_sign,
+                                                model,
                                                 maxIteration, 1000,
                                                 *args)
 
@@ -200,10 +225,10 @@ def computeEfficiency(n_clicks, dose, weight, a, b, c, d, plus_minus_sign, model
     efficiency = round(efficiency, 3)
     print(efficiency)
     return html.Div([
-        html.B("D-Efficiency of proposed design:"),
         html.Br(),
-        html.P(efficiency)])
+        html.B("D-Efficiency of proposed design: "),
+        str(efficiency)])
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(host='0.0.0.0', debug=False)

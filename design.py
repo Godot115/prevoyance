@@ -4,12 +4,10 @@
 # @FileName: design.py
 # @Project : prevoyance
 # @Software: PyCharm
-from dash import dcc
-from dash import html
 import plotly.graph_objects as go
 from dash import dash_table
-
-from dash.dependencies import Input, Output
+from dash import dcc
+from dash import html
 
 
 def blank_fig():
@@ -72,41 +70,41 @@ def designFrame():
             html.Button('Compute', id='compute_button', n_clicks=0),
         ],
             style={
-            'background-color': '#f2f2f2',
-            'width': '30%',
-            'border': '2px #f1f1f1 double',
-            'float': 'left',
-            'margin': '1%'
-        }
+                'background-color': '#f2f2f2',
+                'width': '30%',
+                'border': '2px #f1f1f1 double',
+                'float': 'left',
+                'margin': '1%'
+            }
         ),
         html.Div(children=[
             # plot of function
-            html.Div(id = 'plot_div',
+            html.Div(id='plot_div',
                      children=[
                          html.Div(id='plot_title', children=[html.B('Plot of Function:')],
                                   hidden=True),
                          dcc.Graph(id="plof_of_function", figure=blank_fig())
                      ]),
             html.Div(
-                     children=[
-                         html.Div(id='result_title', children=[html.B('Result:')],
-                                                               hidden= True),
-                         dash_table.DataTable(
-                             id='result',
-                             style_cell_conditional=[
-                                 {
-                                     'textAlign': 'left'
-                                 }
-                             ],
-                         )
-                     ])
+                children=[
+                    html.Div(id='result_title', children=[html.B('Result:')],
+                             hidden=True),
+                    dash_table.DataTable(
+                        id='result',
+                        style_cell_conditional=[
+                            {
+                                'textAlign': 'left'
+                            }
+                        ],
+                    )
+                ])
         ],
-                 id='output_div',
-                 style={"background-color": '#1',
-            'width': '65%',
-            'float': 'right',
-            'margin': '1%'
-    })
+            id='output_div',
+            style={"background-color": '#1',
+                   'width': '65%',
+                   'float': 'right',
+                   'margin': '1%'
+                   })
     ], style={
         'border': "2px #f2f2f2 dotted",
         'width': '85%',
@@ -117,4 +115,3 @@ def designFrame():
         'flex-direction': 'row'
     }
     )
-

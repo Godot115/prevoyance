@@ -26,12 +26,12 @@ def intro():
         ),
         html.P(
             "This four models can be used for describing the change in any continuous endpoint as a function of dose."),
-        html.P("\(y\) is any continuous endpoint, and \(x\) denotes the dose."),
+        html.P("$y$ is any continuous endpoint, and $x$ denotes the dose."),
         html.P(
-            "In all models the parameter \(a\) represents the level of the endpoint at dose 0, and \(b\) can be considered as the parameter reﬂecting the efﬁcacy of the chemical (or the sensitivity of the subject)."),
+            "In all models the parameter $a$ represents the level of the endpoint at dose 0, and $b$ can be considered as the parameter reﬂecting the efﬁcacy of the chemical (or the sensitivity of the subject)."),
         html.P(
-            "At high doses Models 3 and 4 level off to the value \(ac\), so the parameter \(c\) can be interpreted as the maximum relative change."),
+            "At high doses Models 3 and 4 level off to the value $ac$, so the parameter $c$ can be interpreted as the maximum relative change."),
         html.P(
-            "The parameter \(d\) is constrained to values \(\geq\) 1, to prevent the slope of the function at dose 0 being inﬁnite, which seems biologically implausible."),
+            "The parameter $d$ is constrained to values $\geq$ 1, to prevent the slope of the function at dose 0 being inﬁnite, which seems biologically implausible."),
         html.Br()
     ])
