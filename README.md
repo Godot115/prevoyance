@@ -2,7 +2,8 @@
 
 ## Introduction
 Prevoyance is an application that can compute D-optimal designs for Dose-Response design which can be described by a general family of models.
-[Demo](https:design.proteinpill.fun)
+[Demo](https://design.proteinpill.fun/)
+
 
 ## Requirements
 - python 3.8
