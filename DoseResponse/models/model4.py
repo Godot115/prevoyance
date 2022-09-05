@@ -29,7 +29,7 @@ def partialbNegative(x, *args):
     a = args[0]
     b = args[1]
     c = args[2]
-    return (a * c - a) * math.log(x) * x / b
+    return a * x * math.log(x) * (c - 1) / b
 
 
 # def partialcNegative(x, *args):
@@ -42,7 +42,7 @@ def partialcNegative(x, *args):
     a = args[0]
     b = args[1]
     c = args[2]
-    return x * (a / x - a)
+    return a - a * x
 
 
 def vectorOfPartialDerivative(x, plus_minus_sign, *args):
@@ -74,6 +74,7 @@ def informationMatrix(designPoints, plus_minus_sign, *args):
                   weights[i]
     return np.array(result)
 
+
 def informationMatrixWithWeight(designPoints, plus_minus_sign, *args):
     """
     :param designPoints: design points
@@ -97,9 +98,10 @@ def variance(x, inverseInformationMatrix, plus_minus_sign, *args):
     result = np.matmul(left, vectorOfPartialDerivative(x, plus_minus_sign, *args))
     return result[0][0]
 
+
 def combinedVariance(x_i, x_j, invFIM, plus_minus_sign, *args):
-    return np.matmul(np.matmul(vectorOfPartialDerivative(x_j, plus_minus_sign, *args).T, invFIM),
-                     vectorOfPartialDerivative(x_i, plus_minus_sign, *args))
+    return np.matmul(np.matmul(vectorOfPartialDerivative(x_i, plus_minus_sign, *args).T, invFIM),
+                     vectorOfPartialDerivative(x_j, plus_minus_sign, *args))[0][0]
 
 
 def delta(x_i, x_j, invFIM, plus_minus_sign, *args):
@@ -109,4 +111,3 @@ def delta(x_i, x_j, invFIM, plus_minus_sign, *args):
                                                                                                plus_minus_sign,
                                                                                                *args) * combinedVariance(
         x_i, x_j, invFIM, plus_minus_sign, *args)) - variance(x_i, invFIM, plus_minus_sign, *args)
-

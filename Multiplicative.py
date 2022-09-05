@@ -52,4 +52,4 @@ def Multiplicative(lowerBoundary, upperBoundary,
     print(end - start)
 
 
-Multiplicative(1, 2500, "positive", "Model5", 10000, *(349.02687, 1067.04343, 0.76332, 2.60551))
+# Multiplicative(1, 2500, "positive", "Model5", 10000, *(349.02687, 1067.04343, 0.76332, 2.60551))

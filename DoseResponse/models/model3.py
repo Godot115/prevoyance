@@ -25,14 +25,14 @@ def partialbPositive(x, *args):
     b = args[1]
     c = args[2]
     d = args[3]
-    return -a * d * log(x) * x / b
+    return (-a * d * log(x) * x) / b
 
 def partialbNegative(x, *args):
     a = args[0]
     b = args[1]
     c = args[2]
     d = args[3]
-    return -a * d * log(x) * x / b
+    return (-a * d * log(x) * x) / b
 
 
 def partialdPositive(x, *args):
@@ -66,7 +66,7 @@ def vectorOfPartialDerivative(x, plus_minus_sign="positive", *args):
                           partialbPositive(x, *args),
                           partialdPositive(x, *args)]]).T
     else:
-        x = exp(-(x / args[1]) ** args[3])
+        x = exp(-((x / args[1]) ** args[3]))
         return np.array([[partialaNegative(x, *args),
                           partialbNegative(x, *args),
                           partialdNegative(x, *args)]]).T
@@ -108,8 +108,8 @@ def variance(x, inverseInformationMatrix, plus_minus_sign="positive", *args):
     return result[0][0]
 
 def combinedVariance(x_i, x_j, invFIM, plus_minus_sign, *args):
-    return np.matmul(np.matmul(vectorOfPartialDerivative(x_j, plus_minus_sign, *args).T, invFIM),
-                     vectorOfPartialDerivative(x_i, plus_minus_sign, *args))
+    return np.matmul(np.matmul(vectorOfPartialDerivative(x_i, plus_minus_sign, *args).T, invFIM),
+                     vectorOfPartialDerivative(x_j, plus_minus_sign, *args))[0][0]
 
 
 def delta(x_i, x_j, invFIM, plus_minus_sign, *args):

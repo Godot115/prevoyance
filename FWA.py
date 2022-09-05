@@ -13,6 +13,68 @@ from Cluster.DbScan import DbScan
 from DoseResponse.models import model2, model3, model4, model5
 
 
+def FWA(lowerBoundary, upperBoundary,
+        plus_minus_sign, model,
+        grid, *args):
+    """
+    First order alrogithm
+    :param designPoints:
+    :param lowerBoundary:
+    :param upperBoundary:
+    :param model:
+    :param maxIteration:
+    :param grid:
+    :param args:
+    :return:
+    """
+
+    numOfDesignPoints = 0
+    if model == "Model2":
+        model = model2
+        numOfDesignPoints = 2
+    elif model == "Model3":
+        model = model3
+        numOfDesignPoints = 3
+    elif model == "Model4":
+        model = model4
+        numOfDesignPoints = 3
+    elif model == "Model5":
+        model = model5
+        numOfDesignPoints = 4
+    designPoints = [[lowerBoundary + spaceLength / (4 + 1) * (i + 1), 1 / 4] for i in range(4)]
+    designSpace = np.linspace(lowerBoundary, upperBoundary, num=grid)
+    FIM = model.informationMatrixWithWeight(designPoints, plus_minus_sign, *args)
+    invFIM = model.inverseInformationMatrix(FIM)
+    det_FIM = np.linalg.det(FIM)
+    FIM_gain = det_FIM
+    i = 4
+    maxVariance = float('inf')
+    start = time.time()
+    maxVariancePoint = sys.maxsize
+    designPointsLen = len(designPoints)
+    while maxVariance - numOfDesignPoints > 0.01:
+        i += 1
+        maxVariance = float('-inf')
+        maxVariancePoint = sys.maxsize
+        for j in range(len(designSpace)):
+            dVariance = model.variance(designSpace[j], invFIM, plus_minus_sign, *args)
+            if dVariance > maxVariance:
+                maxVariance = dVariance
+                maxVariancePoint = designSpace[j]
+        designPointsLen += 1
+        FIM = (1 - 1 / designPointsLen) * FIM + model.vectorOfPartialDerivative(
+            maxVariancePoint, plus_minus_sign, *args) * \
+              model.vectorOfPartialDerivative(maxVariancePoint, plus_minus_sign, *args).T * (1 / designPointsLen)
+        invFIM = model.inverseInformationMatrix(FIM)
+        FIM_gain = np.linalg.det(FIM) - det_FIM
+        det_FIM = np.linalg.det(FIM)
+        print(FIM_gain)
+    end = time.time()
+    print(det_FIM)
+    print(end - start)
+    return i
+
+
 def modifiedFWA(lowerBoundary, upperBoundary,
                 plus_minus_sign, model,
                 grid, *args):
@@ -100,70 +162,9 @@ def modifiedFWA(lowerBoundary, upperBoundary,
     return i
 
 
-def FWA(lowerBoundary, upperBoundary,
-        plus_minus_sign, model,
-        grid, *args):
-    """
-    First order alrogithm
-    :param designPoints:
-    :param lowerBoundary:
-    :param upperBoundary:
-    :param model:
-    :param maxIteration:
-    :param grid:
-    :param args:
-    :return:
-    """
-
-    numOfDesignPoints = 0
-    if model == "Model2":
-        model = model2
-        numOfDesignPoints = 2
-    elif model == "Model3":
-        model = model3
-        numOfDesignPoints = 3
-    elif model == "Model4":
-        model = model4
-        numOfDesignPoints = 3
-    elif model == "Model5":
-        model = model5
-        numOfDesignPoints = 4
-    designPoints = [[lowerBoundary + spaceLength / (4 + 1) * (i + 1), 1 / 4] for i in range(4)]
-    designSpace = np.linspace(lowerBoundary, upperBoundary, num=grid)
-    FIM = model.informationMatrixWithWeight(designPoints, plus_minus_sign, *args)
-    invFIM = model.inverseInformationMatrix(FIM)
-    det_FIM = np.linalg.det(FIM)
-    FIM_gain = det_FIM
-    i = 4
-    maxVariance = float('inf')
-    start = time.time()
-    maxVariancePoint = sys.maxsize
-    designPointsLen = len(designPoints)
-    while maxVariance - numOfDesignPoints > 0.01:
-        i += 1
-        maxVariance = float('-inf')
-        maxVariancePoint = sys.maxsize
-        for j in range(len(designSpace)):
-            dVariance = model.variance(designSpace[j], invFIM, plus_minus_sign, *args)
-            if dVariance > maxVariance:
-                maxVariance = dVariance
-                maxVariancePoint = designSpace[j]
-        designPointsLen += 1
-        FIM = (1 - 1 / designPointsLen) * FIM + model.vectorOfPartialDerivative(
-            maxVariancePoint, plus_minus_sign, *args) * \
-              model.vectorOfPartialDerivative(maxVariancePoint, plus_minus_sign, *args).T * (1 / designPointsLen)
-        invFIM = model.inverseInformationMatrix(FIM)
-        FIM_gain = np.linalg.det(FIM) - det_FIM
-        det_FIM = np.linalg.det(FIM)
-        print(FIM_gain)
-    end = time.time()
-    print(det_FIM)
-    print(end - start)
-    return i
-
 def FWAwithAlphaS(lowerBoundary, upperBoundary,
-        plus_minus_sign, model,
-        grid, *args):
+                  plus_minus_sign, model,
+                  grid, *args):
     """
     First order alrogithm
     :param designPoints:
@@ -224,11 +225,12 @@ def FWAwithAlphaS(lowerBoundary, upperBoundary,
         invFIM = model.inverseInformationMatrix(FIM)
         FIM_gain = np.linalg.det(FIM) - det_FIM
         det_FIM = np.linalg.det(FIM)
-        print(det_FIM,maxVariance)
+        print(det_FIM, maxVariance)
     end = time.time()
     print(det_FIM)
     print(end - start)
     return i
+
 
 def FWAwithBack(lowerBoundary, upperBoundary,
                 plus_minus_sign, model,
@@ -321,19 +323,19 @@ def FWAwithBack(lowerBoundary, upperBoundary,
     return i
 
 
-grid = 10000
-lowerBoundary = 0.01
-upperBoundary = 2500
-spaceLength = upperBoundary - lowerBoundary
-# for k in range(40):
-initialPoints = [lowerBoundary + spaceLength / (4 + 1) * (i + 1) for i in range(4)]
-a = 349.02687
-b = 1067.04343
-c = 0.76332
-d = 2.60551
-args = (a, b, c, d)
-FWA(lowerBoundary, upperBoundary,
-            "positive", "Model5", grid, *args)
+# grid = 10000
+# lowerBoundary = 0.01
+# upperBoundary = 2500
+# spaceLength = upperBoundary - lowerBoundary
+# # for k in range(40):
+# initialPoints = [lowerBoundary + spaceLength / (4 + 1) * (i + 1) for i in range(4)]
+# a = 349.02687
+# b = 1067.04343
+# c = 0.76332
+# d = 2.60551
+# args = (a, b, c, d)
+# FWA(lowerBoundary, upperBoundary,
+#     "positive", "Model5", grid, *args)
 # import matplotlib.pyplot as plot
 # import numpy as np
 #

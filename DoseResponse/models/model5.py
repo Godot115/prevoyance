@@ -128,8 +128,8 @@ def variance(x, inverseInformationMatrix, plus_minus_sign, *args):
 
 
 def combinedVariance(x_i, x_j, invFIM, plus_minus_sign, *args):
-    return np.matmul(np.matmul(vectorOfPartialDerivative(x_j, plus_minus_sign, *args).T, invFIM),
-                     vectorOfPartialDerivative(x_i, plus_minus_sign, *args))
+    return np.matmul(np.matmul(vectorOfPartialDerivative(x_i, plus_minus_sign, *args).T, invFIM),
+                     vectorOfPartialDerivative(x_j, plus_minus_sign, *args))[0][0]
 
 
 def delta(x_i, x_j, invFIM, plus_minus_sign, *args):

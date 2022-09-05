@@ -65,4 +65,4 @@ def modifiedFE(designPoints, lowerBoundary, upperBoundary,
     print(end - start)
 
 
-modifiedFE([1, 1, 1, 1], 0.001, 2500, "positive", "Model5", 10000, 10000, *(349.02687, 1067.04343, 0.76332, 2.60551))
+# modifiedFE([1, 1, 1, 1], 0.001, 2500, "positive", "Model5", 10000, 10000, *(349.02687, 1067.04343, 0.76332, 2.60551))
