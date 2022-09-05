@@ -40,14 +40,14 @@ def partialdPositive(x, *args):
     b = args[1]
     c = args[2]
     d = args[3]
-    return a * log(x) * x * log(log(x) ** (1 / d))
+    return a * log(x) * x * log(log(x) ** (-d))
 
 def partialdNegative(x, *args):
     a = args[0]
     b = args[1]
     c = args[2]
     d = args[3]
-    return a * log(x) * x * log((-log(x)) ** (1 / d))
+    return a * log(x) * x * log((-log(x)) ** (-d))
 
 
 def vectorOfPartialDerivative(x, plus_minus_sign="positive", *args):
@@ -78,17 +78,23 @@ def informationMatrix(designPoints, plus_minus_sign="positive", *args):
     :return: information matrix
     """
     result = np.zeros((3, 3))
-    if type(designPoints[0]) == np.float64:
-        weights = [1 / len(designPoints) for i in range(len(designPoints))]
-        for i in range(len(designPoints)):
-            result += vectorOfPartialDerivative(designPoints[i], plus_minus_sign, *args) * \
-                      vectorOfPartialDerivative(designPoints[i], plus_minus_sign, *args).T * \
-                      weights[i]
-    else:
-        for i in range(len(designPoints)):
-            result += vectorOfPartialDerivative(designPoints[i][0], plus_minus_sign, *args) * \
-                      vectorOfPartialDerivative(designPoints[i][0], plus_minus_sign, *args).T * \
-                      designPoints[i][1]
+    weights = [1 / len(designPoints) for i in range(len(designPoints))]
+    for i in range(len(designPoints)):
+        result += vectorOfPartialDerivative(designPoints[i], plus_minus_sign, *args) * \
+                  vectorOfPartialDerivative(designPoints[i], plus_minus_sign, *args).T * \
+                  weights[i]
+    return np.array(result)
+
+def informationMatrixWithWeight(designPoints, plus_minus_sign="positive", *args):
+    """
+    :param designPoints: design points
+    :return: information matrix
+    """
+    result = np.zeros((3, 3))
+    for i in range(len(designPoints)):
+        result += vectorOfPartialDerivative(designPoints[i][0], plus_minus_sign, *args) * \
+                  vectorOfPartialDerivative(designPoints[i][0], plus_minus_sign, *args).T * \
+                  designPoints[i][1]
     return np.array(result)
 
 
@@ -100,3 +106,26 @@ def variance(x, inverseInformationMatrix, plus_minus_sign="positive", *args):
     left = np.matmul(vectorOfPartialDerivative(x, plus_minus_sign, *args).T, inverseInformationMatrix)
     result = np.matmul(left, vectorOfPartialDerivative(x, plus_minus_sign, *args))
     return result[0][0]
+
+def combinedVariance(x_i, x_j, invFIM, plus_minus_sign, *args):
+    return np.matmul(np.matmul(vectorOfPartialDerivative(x_j, plus_minus_sign, *args).T, invFIM),
+                     vectorOfPartialDerivative(x_i, plus_minus_sign, *args))
+
+
+def delta(x_i, x_j, invFIM, plus_minus_sign, *args):
+    return variance(x_j, invFIM, plus_minus_sign, *args) - (
+            variance(x_i, invFIM, plus_minus_sign, *args) * variance(x_j, invFIM, plus_minus_sign,
+                                                                     *args) - combinedVariance(x_i, x_j, invFIM,
+                                                                                               plus_minus_sign,
+                                                                                               *args) * combinedVariance(
+        x_i, x_j, invFIM, plus_minus_sign, *args)) - variance(x_i, invFIM, plus_minus_sign, *args)
+
+
+# a = 349.02687
+# b = 1067.04343
+# c = 0.76332
+# d = 2.60551
+# args = (a, b, c, d)
+# x=exp((1 / args[1]) ** args[3])
+# print(x)
+# print(partialdPositive(x, *args))

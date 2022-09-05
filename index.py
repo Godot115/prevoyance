@@ -18,7 +18,7 @@ from efficiency import efficiency, efficiency_points_inputer, compute_efficiency
 from intro import introduction
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
-
+server = app.server
 # assume you have a "long-form" data frame
 # see https://plotly.com/python/px-arguments/ for more options
 
@@ -198,4 +198,4 @@ def fetchParametersandCalBaye(parameter, model, plus_minus_sign, lowerBoundary, 
 
 
 if __name__ == '__main__':
-    app.run_server( debug=True)
+    app.run_server(debug=True)

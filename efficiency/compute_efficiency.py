@@ -5,8 +5,8 @@
 # @Project : prevoyance
 # @Software: PyCharm
 import numpy as np
-from dash import dcc
 from dash import html
+
 from DoseResponse import FirstOrder
 
 
@@ -24,10 +24,10 @@ def computeEfficiency(n_clicks, dose, weight, a, b, c, d, plus_minus_sign, model
     maxIteration = int(maxIteration)
     lowerBoundary = float(lowerBoundary)
     upperBoundary = float(upperBoundary)
-    randonInitialpoints = FirstOrder.createInitialPoints(lowerBoundary, upperBoundary)
-    optimalDesignPoints = FirstOrder.firstOrder(randonInitialpoints, lowerBoundary, upperBoundary, plus_minus_sign,
+    initialpoints = FirstOrder.createInitialPoints(lowerBoundary, upperBoundary, model)
+    optimalDesignPoints = FirstOrder.firstOrder(initialpoints, lowerBoundary, upperBoundary, plus_minus_sign,
                                                 model,
-                                                maxIteration, 1000,
+                                                maxIteration,
                                                 *args)
 
     optimalDesignPoints = [(0.01 if i[0] - 0 <= 1e-2 else float(i[0]), float(i[1])) for i in

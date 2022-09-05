@@ -16,6 +16,8 @@ from DoseResponse.models import model2
 from DoseResponse.models import model3
 from DoseResponse.models import model4
 from DoseResponse.models import model5
+
+
 def formatResult(designPoints):
     """
     format the result into a list of tuples
@@ -32,6 +34,7 @@ def formatResult(designPoints):
         result.append((round(i[0], 3), round(i[1] / numbers, 3)))
     return result
 
+
 def infoMAT(designPoints, param, model, plus_minus):
     numOfPoints = len(designPoints)
     paramNum = len(param[0])
@@ -45,6 +48,7 @@ def infoMAT(designPoints, param, model, plus_minus):
     #     model = model5
     result = np.zeros((paramNum, paramNum))
     for i in param:
+        # result += model.informationMatrixWithWeight(designPoints, plus_minus, *i) / paramNum
         result += model.informationMatrix(designPoints, plus_minus, *i) / paramNum
     return result
 
@@ -89,7 +93,7 @@ def variance(model, inverseInformationMatrix, newPoint, plus_minus, param):
     return variance
 
 
-def firstOrder(param, model: str, plus_minus, lowerBoundary, upperBoundary, maxIteration=100, grid=1000):
+def firstOrder(param, model: str, plus_minus, lowerBoundary, upperBoundary, maxIteration=100):
     numOfDesignPoints = 0
     if model == "Model2":
         model = model2
@@ -103,7 +107,8 @@ def firstOrder(param, model: str, plus_minus, lowerBoundary, upperBoundary, maxI
     elif model == "Model5":
         model = model5
         numOfDesignPoints = 4
-    designSpace = np.linspace(lowerBoundary, upperBoundary, num=grid)
+    spaceLenth = upperBoundary - lowerBoundary
+    designSpace = np.linspace(lowerBoundary, upperBoundary, num=100)
     initialPoints = createInitialPoints(lowerBoundary, upperBoundary)
     informationMatrix = infoMAT(initialPoints, param, model, plus_minus)
     invInformationMatrix = np.linalg.inv(informationMatrix)
@@ -127,6 +132,18 @@ def firstOrder(param, model: str, plus_minus, lowerBoundary, upperBoundary, maxI
             if dVariance > maxVariance:
                 maxVariance = dVariance
                 maxVariancePoint = designSpace[j]
+
+        newSpace = np.linspace(
+            maxVariancePoint - spaceLenth / 10 if maxVariancePoint - spaceLenth / 10 > lowerBoundary else lowerBoundary,
+            maxVariancePoint + spaceLenth / 10 if maxVariancePoint + spaceLenth / 10 < upperBoundary else upperBoundary,
+            num=100)
+
+        for k in newSpace:
+            dVariance = variance(model, invInformationMatrix, designSpace[j], plus_minus, param)
+            if dVariance > maxVariance:
+                maxVariance = dVariance
+                maxVariancePoint = k
+
         currentPointsNumber = len(designPoints)
         for pa in param:
             informationMatrix = ((
@@ -145,11 +162,12 @@ def firstOrder(param, model: str, plus_minus, lowerBoundary, upperBoundary, maxI
     result = formatResult(designPoints)
     return result
 
+
 def GenerateBayesian(parameter, model, plus_minus_sign, lowerBoundary, upperBoundary, maxIteration, n_clicks):
     lowerBoundary = float(lowerBoundary)
     upperBoundary = float(upperBoundary)
     points = createInitialPoints(lowerBoundary, upperBoundary)
-    result = firstOrder(parameter, model,plus_minus_sign, lowerBoundary, upperBoundary, maxIteration, grid=1000)
+    result = firstOrder(parameter, model, plus_minus_sign, lowerBoundary, upperBoundary, maxIteration)
     result = dict(result)
     result = pd.DataFrame(list(result.items()),
                           columns=['Point', 'Weight'])
