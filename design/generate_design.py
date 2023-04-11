@@ -4,6 +4,7 @@
 # @FileName: generate_design.py
 # @Project : prevoyance
 # @Software: PyCharm
+import matplotlib as mpl
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,7 +15,7 @@ from DoseResponse.models import model2
 from DoseResponse.models import model3
 from DoseResponse.models import model4
 from DoseResponse.models import model5
-
+mpl.use('Agg')
 
 def GenerateDesign(n_clicks, a, b, c, d, plus_minus_sign, model,
                    lowerBoundary, upperBoundary, maxIteration):

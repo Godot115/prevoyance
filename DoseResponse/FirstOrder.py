@@ -233,11 +233,11 @@ def firstOrder(designPoints, lowerBoundary, upperBoundary,
                 maxVariance = dVariance
                 maxVariancePoint = k
         designPoints.append(maxVariancePoint)
-        if i % 40 == 0 and maxIteration - i >= 40:
-            designPoints = DbScan(designPoints, lowerBoundary, upperBoundary)
+        # if i % 40 == 0 and maxIteration - i >= 40:
+        #     designPoints = DbScan(designPoints, lowerBoundary, upperBoundary)
         informationMatrix = model.informationMatrix(designPoints, plus_minus_sign, *args)
         invInformationMatrix = model.inverseInformationMatrix(informationMatrix)
-    designPoints = DbScan(designPoints, lowerBoundary, upperBoundary)
+    # designPoints = DbScan(designPoints, lowerBoundary, upperBoundary)
     designPoints.sort()
     result = formatResult(designPoints)
     end = time.time()

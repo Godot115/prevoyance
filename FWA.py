@@ -148,9 +148,9 @@ def modifiedFWA(lowerBoundary, upperBoundary,
                 inserted = True
         if not inserted:
             designPoints.append([maxVariancePoint, max_gain_alpha])
-        if i % 40 == 0:
-            # print("********")
-            designPoints = DbScan(designPoints, lowerBoundary, upperBoundary)
+        # if i % 40 == 0:
+        #     print("********")
+            # designPoints = DbScan(designPoints, lowerBoundary, upperBoundary)
         FIM = model.informationMatrixWithWeight(designPoints, plus_minus_sign, *args)
         invFIM = model.inverseInformationMatrix(FIM)
         FIM_gain = np.linalg.det(FIM) - det_FIM
